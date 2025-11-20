@@ -11,6 +11,8 @@ __*.env dosyasına:*__
 
 yazarak uygulamayı çalıştırabilirsiniz. 
 
+Bootcamp programında derslerini zevkle dinlediğim [Sinan Ürün](https://github.com/sinanurun) Hocama teşekkür ederim.
+
 __Ekran Görüntüsü:__
 
 ![screenshot](/ss.png "SS Picture")
