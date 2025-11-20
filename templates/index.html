@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hava Durumu</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="author" content="Mustafa Özlü">
+    <meta name="description" content="Güncel hava durumu bilgilerini öğrenin. Şehir bazında sıcaklık, nem, rüzgar hızı ve daha fazlası.">
+    <meta name="keywords" content="hava durumu, meteoroloji, sıcaklık, nem, rüzgar hızı, şehir hava durumu, güncel hava bilgisi">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background: rgb(5, 114, 204);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            
+        }
+        .search-container {
+            display: flex; 
+            gap: 10px; 
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .search-box {
+            flex:1; 
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #07ac5f;
+        }
+        .search-box button {
+            width: 100%;
+            padding: 12px ;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            height: 100%; 
+        }
+        .search-box button:hover {
+            background: #764ba2;
+        }
+        h1 {
+            text-align: center;
+            color: #f77c4ce7;
+            margin-bottom: 20px;
+        }
+        .weather-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; 
+            margin-top: 5px;
+        }
+
+        .weather-main img {
+            width: 120px;
+            height: auto;
+        }
+
+        .weather-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        .temperature {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2fa39a;
+            margin: 0;
+        }
+
+        .weather-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        .description {
+            font-size: 20px;
+            color: #b4ced4;
+            margin: 5px 0;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #eee;
+            align-items: center;
+        }
+        .detail-item {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .detail-label {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .detail-value {
+            color: #333;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+		#wind_direction {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+		}
+
+		#wind_arrow {
+			//display: inline-block;
+			font-size: 24px;
+			color: #2fa39a;
+			transition: transform 0.5s ease; /* yumuşak dönüş efekti */
+		}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{city}} Hava Durumu</h1>
+        <div class="weather-info">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="search-box" placeholder="Şehir girin" />
+                </div>
+                <div class="search-box">
+                    <button onclick="searchWeather()">Ara</button>
+                </div>
+            </div>
+            <div class="weather-main">
+                <img id="icon" >
+                <div class="weather-text">
+                    <div class="temperature">{{ temperature }}</div>
+                    <div class="description">{{ description }}</div>
+                </div>
+            </div>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="detail-label">Hissedilen Sıcaklık</div>
+                    <div class="detail-value" id="feelsLike">{{ feels_like }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Nem Oranı</div>
+                    <div class="detail-value" id="humidity">{{ humidity }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Rüzgar Hızı</div>
+                    <div class="detail-value" id="wind_speed">{{ wind_speed }} </div>
+                </div>
+				<div class="detail-item">
+					<div class="detail-label">Rüzgar Yönü</div>
+					<div class="detail-value" id="wind_direction">
+					<span id="wind_arrow">⇑</span> 
+					<span id="wind_degree">{{ wind_degree }}</span>
+					</div>
+				</div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Gün Doğumu</div>
+                    <div class="detail-value" id="sunrise">{{ sunrise }}</div>  
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Gün Batımı</div>
+                    <div class="detail-value" id="sunset">{{ sunset }}</div>    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sayfa yüklendiğinde çalışacak fonksiyon
+        window.onload = function() {
+            // İmleci search-box'a odakla
+            document.getElementById('search-box').focus();
+        };
+
+        // Enter tuşu dinleyicisi
+        document.getElementById('search-box').addEventListener('keypress', function(event) {
+            // Enter tuşuna basıldığında (key code 13)
+            if (event.key === 'Enter') {
+                searchWeather();
+            }
+        });
+        
+        function searchWeather() {
+            var city = document.getElementById('search-box').value;
+            fetch('/weather', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ city: city })
+            }).then(response => response.json())
+              .then(data => {   
+                  if (data.error) {
+                      alert(data.error);
+                       document.getElementById('search-box').focus();
+                  } else {
+                    document.querySelector('.temperature').innerText = data.temperature + '°C';
+                    document.getElementById("feelsLike").innerText = data.feels_like + '°C';
+                    document.querySelector('.description').innerText = data.description;
+                    document.getElementById('humidity').innerText = data.humidity + '%';
+                    document.getElementById('wind_speed').innerText = data.wind_speed + ' km/h';
+                    document.getElementById('sunrise').innerText = data.sunrise;
+                    document.getElementById('sunset').innerText = data.sunset;  
+                    document.getElementById('icon').src = data.icon;
+                    document.querySelector('h1').innerText = data.city + ' Hava Durumu'; 
+					document.getElementById('wind_degree').innerText = data.wind_degree + '°';
+					document.getElementById('wind_arrow').style.transform = `rotate(${data.wind_degree}deg)`;
+
+                  }
+              });  
+        }
+    </script>
+</body>
+</html>
